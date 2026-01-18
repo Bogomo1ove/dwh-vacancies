@@ -28,7 +28,5 @@ class HeadHunter:
                     url = data['alternate_url']
                     )
 
-
-    @staticmethod
     def get_vacancies(date_to):
-        return [HeadHunter.transform_data(vacancy) for vacancy in HeadHunter.get_response(date_to)['items']]
+        return [self.transform_data(vacancy) for vacancy in self.get_response(date_to)['items']]
