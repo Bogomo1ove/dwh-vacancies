@@ -7,7 +7,7 @@ class HeadHunter:
 
     @staticmethod
     def get_response(date_to) -> dict:
-        start_date = (date_to - timedelta(hours=12)).isoformat() # todo: сделать идемпотентным (передавать в эту функцию определенное время-начало таски)
+        start_date = (date_to - timedelta(hours=12)).isoformat()
         response = requests.get('https://api.hh.ru/vacancies/',
                 params = {'area': '2', 'industry': '7',
                           'date_from': start_date, 'date_to': date_to.isoformat()}
@@ -17,7 +17,6 @@ class HeadHunter:
 
     @staticmethod
     def transform_data(data: dict) -> dict:
-        print(f"Сбор данных из вакансии: {data['name']}, ссылка на вакансию: {data['url']}")
         return dict(salary_from = (data.get("salary") or {}).get("from"),
                     salary_to = (data.get("salary") or {}).get("to"),
                     title=data['name'],
