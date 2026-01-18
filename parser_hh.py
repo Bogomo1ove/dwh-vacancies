@@ -28,16 +28,7 @@ class HeadHunter:
                     url = data['alternate_url']
                     )
 
-    @staticmethod
-    def dump_response(data):
-        if data:
-            with open(f'{datetime.now().replace(microsecond=0).isoformat()}.json', "w") as file:
-                        json.dump(data, file, ensure_ascii=False, indent=4, sort_keys=True)
-        else:
-            raise Exception("Отсутсвует файл для записи!")
-        return f'{datetime.today().isoformat()}.json'
 
     @staticmethod
     def get_vacancies(date_to):
-        return HeadHunter.dump_response(
-            [HeadHunter.transform_data(vacancy) for vacancy in HeadHunter.get_response(date_to)['items']])
+        return [HeadHunter.transform_data(vacancy) for vacancy in HeadHunter.get_response(date_to)['items']]
