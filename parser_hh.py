@@ -4,6 +4,7 @@ import json
 
 
 class HeadHunter:
+    bucket_name = 'headhuntervacancies'
 
     @staticmethod
     def get_response(date_to) -> dict:
