@@ -10,6 +10,7 @@ URL = "https://geekjob.ru"
 
 
 class GeekJob:
+    bucket_name = 'geekjobvacancies'
 
     @staticmethod
     def logger(func):
