@@ -8,10 +8,10 @@ class HeadHunter:
     @staticmethod
     def get_response(date_to) -> dict:
         start_date = (date_to - timedelta(hours=12)).isoformat()
-        response = requests.get('https://api.hh.ru/vacancies/',
+        (response := requests.get('https://api.hh.ru/vacancies/',
                 params = {'area': '2', 'industry': '7',
                           'date_from': start_date, 'date_to': date_to.isoformat()}
-                          )
+                          )).raise_for_status()
         return response.json()
 
 
@@ -28,5 +28,5 @@ class HeadHunter:
                     url = data['alternate_url']
                     )
 
-    def get_vacancies(date_to):
+    def get_vacancies(self, date_to):
         return [self.transform_data(vacancy) for vacancy in self.get_response(date_to)['items']]
