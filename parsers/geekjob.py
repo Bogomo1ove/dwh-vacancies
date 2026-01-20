@@ -3,32 +3,30 @@ from bs4 import BeautifulSoup
 from typing import Dict, List
 import logging
 from functools import wraps
+from datetime import datetime
 
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
-URL = "https://geekjob.ru"
+URL = "https://geekjob.ru/vacancies?sort=1"
 
+def logger(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        logger = logging.getLogger(__name__)
+        logger.info(
+            "Start function: {func_name}, args: {arguments}".format(
+                func_name=func.__name__, arguments=",".join(args)
+            )
+        )
+        result = func(*args, **kwargs)
+        logger.info("Successfully end: {func_name}".format(func_name=func.__name__))
+        return result
+    return wrapper
 
 class GeekJob:
     bucket_name = "geekjobvacancies"
-
-    @staticmethod
-    def logger(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            logger = logging.getLogger(__name__)
-            logger.info(
-                "Start function: {func_name}, args: {arguments}".format(
-                    func_name=func.__name__, arguments=",".join(args)
-                )
-            )
-            result = func(*args, **kwargs)
-            logger.info("Successfully end: {func_name}".format(func_name=func.__name__))
-            return result
-
-        return wrapper
 
     @staticmethod
     @logger
@@ -40,15 +38,18 @@ class GeekJob:
 
     @staticmethod
     @logger
-    def get_vacancies_links(page_url: str) -> List:
+    def get_vacancies_links(page_url: str, date) -> List:
         soup = BeautifulSoup(requests.get(page_url, verify=False).text, "lxml")
         links_list = [
-            f"{URL}/{link.find('a')['href']}"
+            f"https://geekjob.ru{link.find('a')['href']}"
+            if int(link.find('time', class_='truncate datetime-info').text.split(' ')[0]) == date.now().day
+               and len(link.find('time', class_='truncate datetime-info').text.split(' ')) == 2
+            else None
             for link in soup.find(
                 "ul", id="serplist", class_="collection serp-list"
             ).find_all("li", class_="collection-item avatar")
         ]
-        return links_list
+        return list(filter(lambda link: link is not None, links_list))
 
     @staticmethod
     @logger
@@ -61,6 +62,7 @@ class GeekJob:
             .find("section", class_="col s12 m12 main")
             .find("header")
         )
+        creation_date = f"{common_block.find('div', class_='time').text}{datetime.now().year}"
         vacancy_name = f"{common_block.find('h1').text}"
         location = common_block.find("div", class_="location")
         category = common_block.find("div", class_="category").text.split(" • ")
@@ -89,12 +91,14 @@ class GeekJob:
             description=description,
             experience=experience,
             url=link,
+            creation_date=creation_date
         )
 
-    def get_vacancies(self):
+    def get_vacancies(self, date_to):
         vacancies_links = [
             page_link
             for page_number in range(1, self.get_pages_count(URL) + 1)
-            for page_link in self.get_vacancies_links(f"{URL}/vacancies/{page_number}")
+            for page_link in self.get_vacancies_links(f"https://geekjob.ru/vacancies/{page_number}", date_to)
         ]
         return [self.parse_page(link) for link in vacancies_links]
+
