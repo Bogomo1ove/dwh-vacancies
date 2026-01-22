@@ -1,3 +1,4 @@
 requests==2.32.5
-bs4
-minio
+bs4==0.0.2
+minio==7.2.20
+apache-airflow==2.10.5
