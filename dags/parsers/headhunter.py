@@ -1,13 +1,13 @@
 import requests
 from datetime import timedelta
-
+from datetime import datetime
 
 class HeadHunter:
     bucket_name = "headhuntervacancies"
 
     @staticmethod
     def get_response(date_to) -> dict:
-        start_date = (date_to - timedelta(hours=12)).isoformat()
+        start_date = (date_to - timedelta(hours=24)).isoformat()
         (
             response := requests.get(
                 "https://api.hh.ru/vacancies/",
@@ -36,6 +36,7 @@ class HeadHunter:
             description=data["snippet"]["responsibility"] or None,
             experience=data["experience"]["name"] or None,
             url=data["alternate_url"],
+            creation_date = data['created_at']
         )
 
     def get_vacancies(self, date_to):

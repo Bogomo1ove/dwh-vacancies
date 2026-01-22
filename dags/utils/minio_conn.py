@@ -1,14 +1,14 @@
 from minio import Minio
-from config import access_key, secret_key
+from .config import access_key, secret_key
 from typing import Any
 
 
 class MinioConnector:
     minio_client = Minio(
-        endpoint="localhost:9000",
+        endpoint="minio:9000",
         access_key=access_key,
         secret_key=secret_key,
-        secure=False,
+        secure=False
     )
 
 
