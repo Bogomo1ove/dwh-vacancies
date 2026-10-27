@@ -8,7 +8,7 @@ class MinioConnector:
         endpoint="minio:9000",
         access_key=access_key,
         secret_key=secret_key,
-        secure=False
+        secure=False,
     )
 
 
@@ -32,13 +32,20 @@ class Object:
     @staticmethod
     def upload(bucket_name: str, object_name: str, data: Any) -> None:
         MinioConnector.minio_client.put_object(
-            bucket_name, object_name, data, length=-1, part_size=5 * 1024 * 1024
+            bucket_name, object_name, data, length=-1, part_size=5 * 1024 * 1024  # size in Mb
         )
 
     @staticmethod
     def download(bucket_name: str, file_path: str, object_name: str) -> None:
         MinioConnector.minio_client.fget_object(bucket_name, file_path, object_name)
         print(f"File '{object_name}' downloaded")
+
+    @staticmethod
+    def get(bucket_name: str, object_name: str):
+        return MinioConnector.minio_client.get_object(
+            bucket_name,
+            object_name,
+        )
 
     @staticmethod
     def remove(bucket_name: str, object_name: str) -> None:

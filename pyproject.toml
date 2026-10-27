@@ -1,0 +1,15 @@
+[project]
+name = "dwh-vacancies"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "apache-airflow==2.10.5",
+    "bs4>=0.0.2",
+    "minio>=7.2.20",
+    "psycopg==3.1.10",
+    "psycopg-binary==3.1.10",
+    "requests>=2.32.5",
+    "ruff>=0.14.14",
+]
