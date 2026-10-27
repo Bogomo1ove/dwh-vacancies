@@ -10,6 +10,4 @@ def source_to_s3(source, date):
     data = io.BytesIO(
         json.dumps(source.get_vacancies(date), ensure_ascii=False).encode("utf-8")
     )
-    Object.upload(
-        source.bucket_name, f"{date.strftime('%d.%m.%Y')}.json", data
-    )
+    Object.upload(source.bucket_name, f"{date.strftime('%d.%m.%Y')}.json", data)
